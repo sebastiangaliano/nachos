@@ -52,6 +52,10 @@ public:
 
 	char** GetArguments() { return argv_real; }
 
+	// Get an entry from the page table of this address space.
+
+	TranslationEntry* GetPage(int numPage);
+
 private:
 
 	TranslationEntry *pageTable;	// Assume linear page table translation for now!

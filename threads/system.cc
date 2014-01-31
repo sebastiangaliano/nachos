@@ -50,6 +50,10 @@ BitMap *memoryBitMap;			// A BitMap related to address spaces.
 PostOffice *postOffice;
 #endif
 
+#ifdef VM
+TlbHandler *tlbHandler;
+#endif
+
 // External definition, to allow us to take a pointer to this function.
 
 extern void Cleanup();
@@ -222,6 +226,10 @@ void Initialize(int argc, char **argv)
 
 #ifdef NETWORK
 	postOffice = new PostOffice(netname, rely, 10);
+#endif
+
+#ifdef VM
+	tlbHandler = new TlbHandler(TLBSize);
 #endif
 
 }

@@ -334,8 +334,18 @@ void AddrSpace::InitRegisters()
 
 void AddrSpace::SaveState()
 {
+#ifdef USE_TLB
+
+	for (int i = 0; i < TLBSize; i++)
+		if (machine->tlb[i].valid && machine->tlb[i].dirty)
+			pageTable[machine->tlb[i].virtualPage] = machine->tlb[i];
+
+#else
+
 	pageTable = machine->pageTable;
 	numPages = machine->pageTableSize;
+
+#endif
 }
 
 //----------------------------------------------------------------------------------------
@@ -347,8 +357,17 @@ void AddrSpace::SaveState()
 
 void AddrSpace::RestoreState()
 {
+#ifdef USE_TLB
+
+	for (int i = 0; i < TLBSize; i++)
+		machine->tlb[i].valid = false;
+
+#else
+
 	machine->pageTable = pageTable;
 	machine->pageTableSize = numPages;
+
+#endif
 }
 
 //----------------------------------------------------------------------------------------
@@ -373,4 +392,14 @@ void AddrSpace::SetArguments(int argc, char **argv)
 	has_arguments = true;
 	argc_real = argc;
 	argv_real = argv;
+}
+
+//----------------------------------------------------------------------------------------
+// AddrSpace::GetPage
+// Obtain an entry from the corresponding page table.
+//----------------------------------------------------------------------------------------
+
+TranslationEntry* AddrSpace::GetPage(int numPage)
+{
+	return &pageTable[numPage];
 }

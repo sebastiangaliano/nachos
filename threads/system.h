@@ -72,4 +72,10 @@ extern SynchDisk   *synchDisk;
 extern PostOffice* postOffice;
 #endif
 
+#ifdef VM
+#include "tlbhandler.h"
+
+extern TlbHandler* tlbHandler;
+#endif
+
 #endif // SYSTEM_H
