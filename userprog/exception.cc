@@ -687,6 +687,28 @@ void ExceptionHandler(ExceptionType which)
 				break;
 		}
 	}
+	else if (which == PageFaultException)
+	{
+#ifdef USE_TLB
+
+		int missVAddr = machine->ReadRegister(BadVAddrReg);
+		int missVPage = missVAddr / PageSize;
+
+		DEBUG('v', "[TLB]: Missing virtual address %d, from virtual page %d\n",
+              missVAddr, missVPage);
+
+		tlbHandler->UpdateTLB(missVPage);
+
+#endif
+	}
+	else if (which == ReadOnlyException)
+	{
+#ifdef USE_TLB
+
+		ASSERT(false);
+
+#endif
+	}
 	else
 	{
 		printf("[SYSCALL]: Unexpected user mode exception %d %d\n", which, type);

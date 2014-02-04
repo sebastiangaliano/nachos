@@ -24,7 +24,9 @@ void readStrFromUsr(int usrAddr, char *outStr)
 	int i = 0;
 
 	do {
-		machine->ReadMem(usrAddr + i, 1, &aux);
+		if(!machine->ReadMem(usrAddr + i, 1, &aux))
+			ASSERT(machine->ReadMem(usrAddr + i, 1, &aux));
+
 		c = (char) aux;
 		outStr[i] = c;
 		i = i + 1;
@@ -62,8 +64,11 @@ void readBuffFromUsr(int usrAddr, char *outBuff, int byteCount)
 	int i;
 	int aux;
 
-	for (i = 0; i < byteCount; i++) {
-		machine->ReadMem(usrAddr + i, 1, &aux);
+	for (i = 0; i < byteCount; i++)
+	{
+		if (!machine->ReadMem(usrAddr + i, 1, &aux))
+			ASSERT(machine->ReadMem(usrAddr + i, 1, &aux));
+
 		outBuff[i] = (char) aux;
 	}
 
@@ -98,7 +103,9 @@ int getStrLenFromUsr(int usrAddr)
 	int i = 0;
 
 	do {
-		machine->ReadMem(usrAddr + i, 1, &aux);
+		if(!machine->ReadMem(usrAddr + i, 1, &aux))
+			ASSERT(machine->ReadMem(usrAddr + i, 1, &aux));
+
 		c = (char) aux;
 		i = i + 1;
 	} while ( c != '\0');

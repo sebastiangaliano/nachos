@@ -229,7 +229,7 @@ void Initialize(int argc, char **argv)
 #endif
 
 #ifdef VM
-	tlbHandler = new TlbHandler(TLBSize);
+	tlbHandler = new TlbHandler();
 #endif
 
 }

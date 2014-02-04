@@ -1,6 +1,6 @@
 //----------------------------------------------------------------------------------------
 // tlbhandler.cc
-// Estructura de datos que implementa un manejador sobre la tabla TLB.
+// Estructura de datos para implementar un manejador sobre la tabla TLB.
 //----------------------------------------------------------------------------------------
 // Edited by: Leonardo Forti, Sebastian Galiano, Diego Smania
 //----------------------------------------------------------------------------------------
@@ -15,10 +15,8 @@
 // TlbHandler::TlbHandler
 //----------------------------------------------------------------------------------------
 
-TlbHandler::TlbHandler(int nEntries)
+TlbHandler::TlbHandler()
 {
-	numEntries = nEntries;
-	//bitMap = new BitMap(numBits);
 }
 
 //----------------------------------------------------------------------------------------
@@ -27,12 +25,12 @@ TlbHandler::TlbHandler(int nEntries)
 
 TlbHandler::~TlbHandler()
 {
-	//delete bitMap;
 }
 
 //----------------------------------------------------------------------------------------
 // TlbHandler::ChoiceEntryToReplace
-// Encuentra una entrada en la TLB que es candidata a ser reemplazada.
+// Encuentra una entrada, candidata a ser reemplazada, en la TLB. Este metodo
+// sera llamado en el proceso de actualizacion de la tabla TLB.
 //----------------------------------------------------------------------------------------
 
 int TlbHandler::ChoiceEntryToReplace()
@@ -64,18 +62,19 @@ void TlbHandler::UpdateTLB(int virtualPage)
 {
 	// Obtenemos la entrada a ser reemplazada en la tabla TLB.
 
-	int index = ChoiceEntryToReplace();
+	int entryToReplace = ChoiceEntryToReplace();
+	int vpToReplace = machine->tlb[entryToReplace].virtualPage;
 
-	DEBUG('v',"[TLB]: in page %d from process %s, out tlb entry %d.\n",
-          virtualPage, currentThread->getName(), index);
+	DEBUG('v',"[TLB]: Changing TLB entry %d (vp %d) from process %s to entry %d.\n",
+          entryToReplace, vpToReplace, currentThread->getName(), virtualPage);
 
 	// Actualizamos la tabla TLB.
 
 	TranslationEntry *entry = currentThread->space->GetPage(virtualPage);
-	machine->tlb[index].virtualPage = entry->virtualPage;
-	machine->tlb[index].physicalPage = entry->physicalPage;
-	machine->tlb[index].valid = true;
-	machine->tlb[index].readOnly = entry->readOnly;
-	machine->tlb[index].use = entry->use;
-	machine->tlb[index].dirty = entry->dirty;
+	machine->tlb[entryToReplace].virtualPage = entry->virtualPage;
+	machine->tlb[entryToReplace].physicalPage = entry->physicalPage;
+	machine->tlb[entryToReplace].valid = true;
+	machine->tlb[entryToReplace].readOnly = entry->readOnly;
+	machine->tlb[entryToReplace].use = entry->use;
+	machine->tlb[entryToReplace].dirty = entry->dirty;
 }
